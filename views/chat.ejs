@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Messenger</title>
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.css">
+<!-- 		<link rel="stylesheet" href="/css/styles.css" /> -->
+	</head>
+	<body>
+		<main>
+		<nav>
+				<div class="ui top attached menu">
+					<div class="right menu">
+				    	<div class="ui right aligned category search item">
+				      		<div class="ui transparent icon input">
+				        		<input class="prompt" type="text" placeholder="Search new friends...">
+				        		<i class="search link icon"></i>
+				      		</div>
+				      		<div class="results"></div>
+				    	</div>
+				  	</div>
+				</div>
+			</nav>
+			<div class="friend-zone">
+				<div class="friend-request-list">
+				</div>
+				<button class='btn add-friend-btn' id-user="4">Add Friend</button>
+				<div class="friend-list">
+				</div>
+			</div>
+			<div class="tchat-zone">
+			</div>
+			<div class="conversation-zone">
+			</div>
+	    </main>
+	    <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.9/semantic.min.js"></script>
+		<script src="/socket.io/socket.io.js"></script>
+		<script src="/js/client.js"></script>
+	</body>
+</html>
