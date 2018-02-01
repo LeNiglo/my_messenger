@@ -14,7 +14,7 @@
 	// gestion de l'évènement d'affichage d'un ami
 	socket.on('currentFriend', function(friend) {
 		$('.friend-list').append($('<div>', {
-			class: 'friend-list-item',
+			class: 'ui segment friend-list-item',
 			text: friend.username,
 			idUser: friend.id_user
 		}));
@@ -23,41 +23,52 @@
 	socket.on('friendRequestReceived', function(requests) {
 		for (var i = 0; i <requests.length; i++) {
 			var friendRequestBlock = $('<div>', {
-				class: 'friend-request',
+				class: 'ui segment friend-request',
 				'idUser': requests[i].id_user
 			}).append($('<p>', {
 				class: 'friend-name',
-				text: requests[i].username + ' asked to be your friend'
+				text: requests[i].username
+			})).append($('<div>', {
+				class: "button-container"
+			}).append($('<button>', {
+				class: 'ui icon button accept-friend-btn',
+				html: "<i class=\"thumbs outline up icon\"></i>"
 			})).append($('<button>', {
-				class: 'btn accept-friend-btn',
-				text: "Accept"
-			})).append($('<button>', {
-				class: 'btn refuse-friend-btn',
-				text: "Refuse"
-			}));
+				class: 'ui icon button refuse-friend-btn',
+				html: "<i class=\"thumbs outline down icon\"></i>"
+			})));
+			$(".no-request").css('display','none');
 			$('.friend-request-list').append(friendRequestBlock);
 		}
 		//lancement de l'évenement 'accept-friend' au clic
 		$('.accept-friend-btn').click(function(event) {
 			event.preventDefault();
-			$(this).parent().remove();
+			$(this).parent().parent().remove();
 			socket.emit('acceptFriend', {
-				idUser: $(this).parent().attr('idUser')
+				idUser: $(this).parent().parent().attr('idUser')
 			})
+			if($('.friend-request').length==0) {
+				$(".no-request").css('display','block');
+			}
 		});
+		//lancement de l'évenement 'refuse-friend' au clic
 		$('.refuse-friend-btn').click(function(event) {
 			event.preventDefault();
-			$(this).parent().remove();
+			$(this).parent().parent().remove();
 			socket.emit('refuseFriend', {
-				idUser: $(this).parent().attr('idUser')
+				idUser: $(this).parent().parent().attr('idUser')
 			})
+			if($('.friend-request').length==0) {
+				$(".no-request").css('display','block');
+			}
 		});
 	});
+	// gestion de l'évènement d'ajout d'un nouvel ami
 	socket.on('newFriend', function() {
 		alert('You have a new friend !');
 	});
+	// gestion de l'évènement d'ajout d'un nouvel ami
 	socket.on('notFriend', function() {
 		alert('Friend request rejected.');
 	});
 })(jQuery);
-
