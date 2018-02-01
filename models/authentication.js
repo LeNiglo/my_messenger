@@ -43,6 +43,17 @@ module.exports = {
         var sql = "INSERT INTO `user` (`username`,`mail`,`password`) VALUES ('"+name+"','"+mail+"','"+passwd+"')";
         bdd.query(sql, function (err, result) {
             if (err) throw err;
+
+        });
+    },
+    findUserInfo : function(name, bdd)
+    {
+        var sql = "SELECT username, id_user FROM user WHERE username  = \""+name+"\"";
+        return new Promise((resolve, reject) => {
+            bdd.query(sql, function (err, result) {
+                if (err) throw reject(err);
+                resolve(result);
+            });
         });
     }
 }
