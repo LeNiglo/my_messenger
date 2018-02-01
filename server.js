@@ -2,7 +2,13 @@ const express = require('express');
 const app = express();
 const server = app.listen(8080);
 const io = require('socket.io').listen(server);
-
+const session = require('express-session')
+const bodyParser = require('body-parser');
+const pool = require('./config/db.js');
+var auth = require('./models/authentication.js');
+var urlencodedParser = bodyParser.urlencoded({ extended: false });
+var ssn ;
+app.use(session({secret: 'messengerMARL'}));
 //MIDDLEWARE
 app.use(express.static('public'));
 
@@ -12,9 +18,74 @@ app.set('view engine', 'ejs');
 //VARIABLE
 var idUser = 1;
 
+//HOME
+app.get('/', function(req, res) { 
+    ssn = req.session;
+    if(ssn.username) {
+		res.redirect('/messenger')
+    }
+    else
+    res.render('index.ejs');
+});
+
 //VIEWS
 app.get('/messenger', (req, res) => {
 	res.render('chat');
+});
+
+//LOGIN
+app.post('/logIn', urlencodedParser, function(req, res) {
+    ssn = req.session;
+    if(ssn.username) {
+       res.redirect('/messenger')
+    }
+    else
+    {
+        auth.checkAuth(req.body.password,req.body.log,pool).then((result) => {
+        ssn.username = result[0].username;
+        res.redirect('/');
+       }, (erreur)=> {
+           res.render('index.ejs',{err: "Invalid username or password."});
+           return false;
+       });
+    }
+   
+});
+
+//SIGNUP
+app.post('/signUp', urlencodedParser, function(req, res) {
+    ssn = req.session;
+    if(ssn.username) {
+    	res.redirect('/messenger')
+    }
+    else
+    {
+        auth.checkIfExist(req.body.username,pool).then((result) => {
+            return auth.checkIfMailExist(req.body.mail,pool);
+        }, (erreur)=> {
+            res.render('index.ejs',{err: "Username already used."});
+            return false;
+        }).then((result) => {
+            if(!result) return false;
+            auth.insertToDb(req.body.username,req.body.mail,req.body.password,pool);
+            ssn.username = req.body.username;
+            res.redirect('/');
+        }, (erreur)=> {
+            res.render('index.ejs',{err: "Mail already used."});
+            return false;
+        });
+    }
+});
+
+//LOGOUT
+app.get('/logout',function(req,res){
+ req.session.destroy(function(err) {
+   if(err) {
+     console.log(err);
+   } else {
+     res.redirect('/');
+   }
+ });
 });
 
 //SOCKET
