@@ -8,15 +8,16 @@ const pool = require('./config/db.js');
 var auth = require('./models/authentication.js');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 var ssn ;
-app.use(session({secret: 'messengerMARL'}));
+
 //MIDDLEWARE
 app.use(express.static('public'));
+app.use(session({secret: 'messengerMARL'}));
 
 //MOTEUR DE TEMPLATE
 app.set('view engine', 'ejs');
 
-//VARIABLE
-var idUser = 1;
+// //VARIABLE
+// var idUser = 1;
 
 //HOME
 app.get('/', function(req, res) { 
@@ -29,9 +30,6 @@ app.get('/', function(req, res) {
 });
 
 //VIEWS
-app.get('/messenger', (req, res) => {
-	res.render('chat');
-});
 
 //LOGIN
 app.post('/logIn', urlencodedParser, function(req, res) {
@@ -42,14 +40,14 @@ app.post('/logIn', urlencodedParser, function(req, res) {
     else
     {
         auth.checkAuth(req.body.password,req.body.log,pool).then((result) => {
-        ssn.username = result[0].username;
-        res.redirect('/');
-       }, (erreur)=> {
+        	ssn.username = result[0].username;
+        	ssn.idUser = result[0].id_user;
+        	res.redirect('/');
+    	}, (erreur)=> {
            res.render('index.ejs',{err: "Invalid username or password."});
            return false;
        });
     }
-   
 });
 
 //SIGNUP
@@ -68,8 +66,13 @@ app.post('/signUp', urlencodedParser, function(req, res) {
         }).then((result) => {
             if(!result) return false;
             auth.insertToDb(req.body.username,req.body.mail,req.body.password,pool);
-            ssn.username = req.body.username;
-            res.redirect('/');
+	            ssn.username = req.body.username;
+	            auth.findUserInfo(ssn.username,pool).then((result) => {
+	            	ssn.idUser = result[0].id_user;
+	            	res.redirect('/');
+	            }, (erreur)=> {
+	           		return false;
+	       		});
         }, (erreur)=> {
             res.render('index.ejs',{err: "Mail already used."});
             return false;
@@ -79,18 +82,27 @@ app.post('/signUp', urlencodedParser, function(req, res) {
 
 //LOGOUT
 app.get('/logout',function(req,res){
- req.session.destroy(function(err) {
-   if(err) {
-     console.log(err);
-   } else {
-     res.redirect('/');
-   }
- });
+	req.session.destroy(function(err) {
+		if(err) {
+			console.log(err);
+		} else {
+			res.redirect('/');
+		}
+	});
+});
+
+// Messenger
+app.get('/messenger', (req, res) => {
+	idUser = req.session.idUser;
+	if(idUser === undefined) {
+		res.redirect('/');
+	} else {
+		res.render('chat');
+	}
 });
 
 //SOCKET
 io.sockets.on('connection', function (socket) {
-	console.log(socket.id);
 	var relationShip = require('./models/Friend.js');
 	//vérification de l'existance de demande d'ajout d'amis en attente
 	relationShip.findFriendRequest(idUser, function(currentRequests){
