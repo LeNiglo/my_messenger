@@ -8,6 +8,9 @@ const pool = mysql.createConnection({
    debug             :   false
 });
 
-pool.connect();
+pool.connect(function(err) {
+    if (err) throw err;
+  		console.log("Connected!");  
+});
 
 module.exports = pool;
