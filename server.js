@@ -15,9 +15,6 @@ app.use(express.static('public'));
 //MOTEUR DE TEMPLATE
 app.set('view engine', 'ejs');
 
-//VARIABLE
-var idUser = 1;
-
 //HOME
 app.get('/', function(req, res) { 
     ssn = req.session;
