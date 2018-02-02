@@ -43,6 +43,7 @@ app.post('/logIn', urlencodedParser, function(req, res) {
     {
         auth.checkAuth(req.body.password,req.body.log,pool).then((result) => {
         ssn.username = result[0].username;
+        ssn.idUser = result[0].id_user;
         res.redirect('/');
        }, (erreur)=> {
            res.render('index.ejs',{errLog: "Invalid username or password."});
@@ -73,7 +74,12 @@ app.post('/signUp', urlencodedParser, function(req, res) {
                     if(!result) return false;
                     auth.insertToDb(req.body.username,req.body.mail,req.body.password,pool);
                     ssn.username = req.body.username;
+                    auth.findUserInfo(ssn.username,pool).then((result) => {
+                    ssn.idUser = result[0].id_user;
                     res.redirect('/');
+                    }, (erreur)=> {
+                        return false;
+                    });
                 }, (erreur)=> {
                     res.render('index.ejs',{errSign: "Mail already used."});
                     return false;

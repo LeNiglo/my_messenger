@@ -45,6 +45,16 @@ module.exports = {
             if (err) throw err;
         });
     },
+    findUserInfo : function(name, bdd)
+    {
+        var sql = "SELECT username, id_user FROM user WHERE username  = \""+name+"\"";
+        return new Promise((resolve, reject) => {
+            bdd.query(sql, function (err, result) {
+                if (err) throw reject(err);
+                resolve(result);
+            });
+        });
+    },
     validateEmail : function(email) {
       var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
       return email.match(re);
