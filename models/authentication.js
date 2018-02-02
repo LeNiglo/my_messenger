@@ -44,5 +44,13 @@ module.exports = {
         bdd.query(sql, function (err, result) {
             if (err) throw err;
         });
+    },
+    validateEmail : function(email) {
+      var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return email.match(re);
+    },
+    validateUsername : function(username) {
+        var pattern =/^[a-zA-Z0-9_-]+$/;
+        return username.match(pattern);
     }
 }

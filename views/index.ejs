@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <script src="https://use.fontawesome.com/ae0c243531.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300" type="text/css" />
@@ -31,8 +31,9 @@
   </div>
 
   <div class="container1">
-    <form class="form-horizontal" name = "logIn" method="POST" action="/logIn" >
-         <fieldset class="col-md-5">
+    <form method="POST" action="/logIn">
+      <div><p class="err"><%= (!!locals.errLog)?errLog:'' %></p></div>
+        <fieldset class="col-md-5">
         <!-- Text input-->
         <div class="form-group">
           <label class="col-md-4 control-label" for="textinput"></label>
@@ -52,7 +53,7 @@
         <div class="form-group">
           <label class="col-md-4 control-label" for="button1id"></label>
           <div class="col-md-8">
-            <button  type="submit" name="login" class="btn btn-primary">Log in</button>
+            <button  type="submit" class="btn btn-primary">Log in</button>
           </div>
         </div>
       </fieldset>
@@ -61,8 +62,8 @@
   </div>
 
   <div class="container2">
-    <form class="form-horizontal" name="signUp" method="POST" action="/signUp">
-      <div><p class="err"><%= (!!locals.err)?err:'non' %></p></div>
+    <form method="POST" action="/signUp">
+      <div><p class="err"><%= (!!locals.errSign)?errSign:'' %></p></div>
       <fieldset class="col-md-5">
         <!-- Text input-->
         <div class="form-group">
@@ -88,12 +89,97 @@
         <div class="form-group">
           <label class="col-md-4 control-label" for="button1id"></label>
           <div class="col-md-8">
-            <button id="sign" name="sign" type="submit" class="btn btn-primary">Sign up</button>
+            <button type="submit" class="btn btn-primary">Sign up</button>
           </div>
         </div>
       </fieldset>
     </form>
 
   </div>
+    <script
+  src="http://code.jquery.com/jquery-3.3.1.slim.js"
+  integrity="sha256-fNXJFIlca05BIO2Y5zh1xrShK3ME+/lYZ0j+ChxX2DA="
+  crossorigin="anonymous"></script>
+  <script>
+    $(function(){
+      console.log($);
+ // function signUp(e) {
+   //  e.preventDefault()
+   //  alert(e)
+   //   var username = $('input[name="username"]').val();
+   //   var mail = $('input[name="mail"]').val();
+   //    var password = $('input[name="password"]').val();
+   //   var data = {};
+   //   data.username = username;
+   //   data.mail = mail;
+   //   data.password = password;
+   //   console.log(data)
+   //   alert()
+   //   $.ajax({
+   //     type: 'post',
+   //     datatype: 'jsonp',
+   //     data: JSON.stringify(data),
+   //     contentType: 'application/json',
+   //     url: 'http://localhost:8080/signUp', //node.js server is running
+   //     success: function(data) {
+   //       alert("success");
+
+   //     },
+   //     error: function(jqXHR, textStatus, errorThrown) {
+   //      console.log(textStatus) //returns error
+   //      console.log(errorThrown) //returns bad request
+   //      //I want to someohow print the 'something is wrong' message from the api
+   //  }
+   //   });
+   // }
+
+$('#sign').click((e)=>{
+     var username = $('input[name="username"]').val();
+     var mail = $('input[name="mail"]').val();
+     var password = $('input[name="password"]').val();
+     var data = {};
+     data.username = username;
+     data.mail = mail;
+     data.password = password;
+  e.preventDefault();
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", "/signUp");
+    xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhr.send(`username=${username}&mail=${mail}&password=${password}`);
+    xhr.addEventListener("readystatechange", function(){
+      console.log(xhr.responseText);
+    });
+    });
+
+     // $.post({
+     //   type: 'post',
+     //   data: data,
+     //   url: 'http://localhost:8080/signUp', //node.js server is running
+     // }).done((e)=>{
+     //  alert(e)
+     // });
+})
+
+
+    function logIN() {
+     var region = document.getElementById("region").value;
+     var os = document.getElementById("os").value;
+     var data = {};
+     data.region = region;
+     data.os = os;
+     $.ajax({
+       type: 'post',
+       datatype: 'jsonp',
+       data: JSON.stringify(data),
+       contentType: 'application/json',
+       url: 'http://localhost:8080/logIn', //node.js server is running
+       success: function(data) {
+         alert("success");
+
+       }
+     });
+   };
+  
+</script>
 </body>
 </html>

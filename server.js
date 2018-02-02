@@ -45,7 +45,7 @@ app.post('/logIn', urlencodedParser, function(req, res) {
         ssn.username = result[0].username;
         res.redirect('/');
        }, (erreur)=> {
-           res.render('index.ejs',{err: "Invalid username or password."});
+           res.render('index.ejs',{errLog: "Invalid username or password."});
            return false;
        });
     }
@@ -60,20 +60,34 @@ app.post('/signUp', urlencodedParser, function(req, res) {
     }
     else
     {
-        auth.checkIfExist(req.body.username,pool).then((result) => {
-            return auth.checkIfMailExist(req.body.mail,pool);
-        }, (erreur)=> {
-            res.render('index.ejs',{err: "Username already used."});
-            return false;
-        }).then((result) => {
-            if(!result) return false;
-            auth.insertToDb(req.body.username,req.body.mail,req.body.password,pool);
-            ssn.username = req.body.username;
-            res.redirect('/');
-        }, (erreur)=> {
-            res.render('index.ejs',{err: "Mail already used."});
-            return false;
-        });
+        if(auth.validateUsername(req.body.username))
+        {
+            if(auth.validateEmail(req.body.mail))
+            {
+                auth.checkIfExist(req.body.username,pool).then((result) => {
+                    return auth.checkIfMailExist(req.body.mail,pool);
+                }, (erreur)=> {
+                    res.render('index.ejs',{errSign: "Username already used."});
+                    return false;
+                }).then((result) => {
+                    if(!result) return false;
+                    auth.insertToDb(req.body.username,req.body.mail,req.body.password,pool);
+                    ssn.username = req.body.username;
+                    res.redirect('/');
+                }, (erreur)=> {
+                    res.render('index.ejs',{errSign: "Mail already used."});
+                    return false;
+                });
+            }
+            else
+            {
+                res.render('index.ejs',{errSign: "Invalid email."});
+            }
+        }
+        else
+        {
+            res.render('index.ejs',{errSign: "Invalid username."});
+        }
     }
 });
 
