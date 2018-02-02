@@ -21,8 +21,9 @@
         <p>Connect with your friends from Web@cadémie.</p>
       </div>
       <div class="container1">
-        <form class="form-horizontal" name = "logIn" method="POST" action="/logIn" >
-             <fieldset class="col-md-5">
+      <form method="POST" action="/logIn">
+          <div><p class="err"><%= (!!locals.errLog)?errLog:'' %></p></div>
+            <fieldset class="col-md-5">
             <!-- Text input-->
             <div class="form-group">
               <label class="col-md-4 control-label" for="textinput"></label>
@@ -42,15 +43,15 @@
             <div class="form-group">
               <label class="col-md-4 control-label" for="button1id"></label>
               <div class="col-md-8">
-                <button  type="submit" name="login" class="btn btn-primary">Log in</button>
+                <button  type="submit" class="btn btn-primary">Log in</button>
               </div>
             </div>
           </fieldset>
         </form>
       </div>
       <div class="container2">
-        <form class="form-horizontal" name="signUp" method="POST" action="/signUp">
-          <div><p class="err"><%= (!!locals.err)?err:'' %></p></div>
+        <form method="POST" action="/signUp">
+          <div><p class="err"><%= (!!locals.errSign)?errSign:'' %></p></div>
           <fieldset class="col-md-5">
             <!-- Text input-->
             <div class="form-group">
@@ -76,7 +77,7 @@
             <div class="form-group">
               <label class="col-md-4 control-label" for="button1id"></label>
               <div class="col-md-8">
-                <button id="sign" name="sign" type="submit" class="btn btn-primary">Sign up</button>
+                <button type="submit" class="btn btn-primary">Sign up</button>
               </div>
             </div>
           </fieldset>
