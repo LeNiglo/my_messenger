@@ -105,6 +105,16 @@ app.get('/logout',function(req,res){
  });
 });
 
+// Messenger
+app.get('/messenger', (req, res) => {
+	idUser = req.session.idUser;
+	if(idUser === undefined) {
+		res.redirect('/');
+	} else {
+		res.render('chat');
+	}
+});
+
 //SOCKET
 io.sockets.on('connection', function (socket) {
 	console.log(socket.id);
