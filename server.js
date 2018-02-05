@@ -8,9 +8,10 @@ const pool = require('./config/db.js');
 var auth = require('./models/authentication.js');
 var urlencodedParser = bodyParser.urlencoded({ extended: false });
 var ssn ;
-app.use(session({secret: 'messengerMARL'}));
+
 //MIDDLEWARE
 app.use(express.static('public'));
+app.use(session({secret: 'messengerMARL'}));
 
 //MOTEUR DE TEMPLATE
 app.set('view engine', 'ejs');
@@ -26,9 +27,6 @@ app.get('/', function(req, res) {
 });
 
 //VIEWS
-app.get('/messenger', (req, res) => {
-	res.render('chat');
-});
 
 //LOGIN
 app.post('/logIn', urlencodedParser, function(req, res) {
